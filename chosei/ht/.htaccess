@@ -1,0 +1,6 @@
+#<Directory "/var/www/html/chosei/member">
+	AuthType Digest
+	AuthUserFile /var/www/html/chosei/member/.htdigest
+	AuthName "Resricted Area"
+	Require valid-user
+#</Directory>

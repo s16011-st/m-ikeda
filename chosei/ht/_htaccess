@@ -1,0 +1,19 @@
+#リライト方法1
+#以下の書式の〇〇.confという名前のファイルを/etc/httpd/conf.d/に置く
+
+<Directory "/var/www/html/chosei/member">
+	Options +ExecCGI
+	RewriteEngine On
+	RewriteRule （仮名） （実体）
+</Directory>
+
+
+#リライト方法2
+#/etc/httpd/conf/httpd.confの338行目あたりの
+#AllowOverride Noneというディレクティブを
+#AllowOverride Allに書き換えた上で
+#以下の書式の.htaccessを、制御を希望するディレクトリのトップに置く
+
+Options +ExecCGI
+RewriteEngine On
+RewriteRule （仮名） （実体）

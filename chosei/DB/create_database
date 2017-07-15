@@ -1,0 +1,46 @@
+/* 日程調整Webアプリ用データベース定義 */
+
+DROP DATABASE chosei_db;
+DROP USER 'bteam'@'localhost';
+
+CREATE DATABASE chosei_db CHARACTER SET UTF8;
+USE chosei_db;
+
+/* イベント作成テーブル */
+CREATE TABLE t_event (
+	e_id CHAR(50) NOT NULL PRIMARY KEY,	/* イベントID（乱数） */
+	organizer_id CHAR(50) NOT NULL,				/* 幹事判別 */
+	e_name CHAR(50) NOT NULL,		/* 幹事が決めたイベント名 */
+	e_comment CHAR(250)	/* 幹事から参加者へのコメント */
+);
+
+/* 日にち候補テーブル */
+CREATE TABLE t_schedule (
+	s_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,	/* 日にち候補識別番号 */
+	e_id CHAR(50) NOT NULL,	/* t_eventのe_idの外部キー */
+	day_time CHAR(50) NOT NULL,	/* 幹事が決めた日にち候補 */
+	FOREIGN KEY( e_id ) REFERENCES t_event ( e_id )
+);
+
+/* 参加者基本情報テーブル */
+CREATE TABLE t_participant(
+	p_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,	/* 参加者の識別ID */
+	p_name char(50),							/* 参加者の表示名 */
+	p_comment CHAR(250),											/* 参加者からのコメント */
+	e_id CHAR(50) NOT NULL,							/* t_eventのe_idを外部キーに持つ */
+	FOREIGN KEY( e_id ) REFERENCES t_event ( e_id )
+);
+
+/* 参加者都合テーブル */
+CREATE TABLE t_tsugo(
+	s_id INTEGER NOT NULL,			/* 日にち候補識別番号 */
+	p_id INTEGER NOT NULL,	/* 参加者の識別ID */
+	tsugo INTEGER NOT NULL,		/* 都合　(◯ △ ✕) */
+	PRIMARY KEY( s_id, p_id ),
+	FOREIGN KEY( s_id ) REFERENCES t_schedule ( s_id ),
+	FOREIGN KEY( p_id ) REFERENCES t_participant ( p_id )
+);
+
+/* ユーザ宣言 */
+CREATE USER 'bteam'@'localhost' IDENTIFIED BY 'kickobe';
+GRANT ALL ON chosei_db.* TO  'bteam'@'localhost' IDENTIFIED BY 'kickobe';
